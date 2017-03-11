@@ -48,6 +48,26 @@ namespace Code2Doc
             return srcPath;
         }
 
+        static string getTargetPath(string[] args)
+        {
+            var tPath = String.Empty;
+            if (args.Length > 1)
+            {
+                tPath = args[1];
+            }
+
+            if (Directory.Exists(tPath) == false)
+            {
+                Console.WriteLine("target path not exists");
+                Console.WriteLine("pls type or paste your src path:");
+
+                return getTargetPath(new string[] { String.Empty, Console.ReadLine() });
+            }
+
+            return tPath;
+        }
+
+
         static void Main(string[] args)
         {
             string dir = AppDomain.CurrentDomain.BaseDirectory;
@@ -56,6 +76,8 @@ namespace Code2Doc
             var srcPath = getSrcPath(args);
 
             var files = FindFile2(srcPath);
+
+            var targetDir = args.Length > 1 ? getTargetPath(args) : String.Empty;
 
             foreach (var file in files)
             {
@@ -72,7 +94,8 @@ namespace Code2Doc
                 if (fileType == ".png" || fileType == ".jpg" || fileType == ".gif" || fileType == ".docx" || fileType == ".css")
                     continue;
 
-                var fileDir = System.IO.Path.GetDirectoryName(file);
+                var fileDir = targetDir == String.Empty ? System.IO.Path.GetDirectoryName(file) : targetDir;
+
                 Console.WriteLine(fileDir);
 
                 var docFile = System.IO.Path.Combine(fileDir, fileName + ".docx");
